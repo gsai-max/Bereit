@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronUp, CheckCircle, XCircle } from 'lucide-react'
+import { ChevronDown, ChevronUp, CheckCircle, XCircle, Sparkles } from 'lucide-react'
 import { Card } from '../common/Card'
 import { Badge } from '../common/Badge'
 import type { EvaluatedQuestionResponse } from '../../types/diagnostic'
 
 export interface MistakeReviewDrawerProps {
   evaluatedResponses: EvaluatedQuestionResponse[]
+  onAskAiTutor?: (prompt: string) => void
 }
 
-export function MistakeReviewDrawer({ evaluatedResponses }: MistakeReviewDrawerProps) {
+export function MistakeReviewDrawer({ evaluatedResponses, onAskAiTutor }: MistakeReviewDrawerProps) {
   const [isOpen, setIsOpen] = useState(true)
 
   const incorrectResponses = evaluatedResponses.filter((item) => !item.isCorrect)
@@ -57,6 +58,8 @@ export function MistakeReviewDrawer({ evaluatedResponses }: MistakeReviewDrawerP
               (o) => o.id === item.question.correctOptionId
             )
 
+            const askTutorPrompt = `Erkläre mir bitte Frage ${idx + 1}: "${item.question.prompt}". Die richtige Antwort ist "${correctOption?.text || ''}", aber ich habe "${userChosenOption?.text || ''}" gewählt. Warum ist meine Wahl falsch und welche A1-Regel gilt hier?`
+
             return (
               <div
                 key={item.question.id}
@@ -99,6 +102,20 @@ export function MistakeReviewDrawer({ evaluatedResponses }: MistakeReviewDrawerP
                 <div className="p-2.5 rounded-lg bg-blue-50/60 border border-blue-100 text-xs text-blue-950 leading-relaxed">
                   <strong>Erklärung:</strong> {item.question.explanation}
                 </div>
+
+                {/* Ask AI Tutor action */}
+                {onAskAiTutor && (
+                  <div className="pt-1 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => onAskAiTutor(askTutorPrompt)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-brand-blue font-semibold text-xs transition-colors min-h-[36px]"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>KI-Tutor nach Details fragen</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )
           })}

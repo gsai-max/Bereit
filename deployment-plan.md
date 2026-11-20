@@ -186,14 +186,14 @@ For immediate manual deployments or preview environments:
 
 ## 6. Environment Variables & Secrets Matrix
 
-Unlike standard full-stack web applications, **Bereit?** intentionally eliminates external runtime credentials, databases, and third-party APIs to preserve student privacy and eliminate attack surfaces:
+While the core diagnostic scoring engine remains 100% deterministic, offline, and air-gapped on the client, an optional serverless AI German tutor (`api/tutor.ts`) is available to answer student questions and explain German grammatical nuances using **Groq LLaMA 3.1** (`llama-3.1-8b-instant`):
 
 | Variable | Required | Default | Scope | Purpose |
 |---|---|---|---|---|
+| `GROQ_API_KEY` | Optional | *Unset (Offline Mode)* | Serverless / Edge Runtime | Authenticates `api/tutor.ts` with Groq API for interactive A1 grammar explanations. Free key from console.groq.com. If unset, app gracefully displays offline guidance. |
 | `NODE_ENV` | Optional | `production` | Build time | Enables Vite minification and tree-shaking |
-| *API Keys* | **None** | — | — | Zero third-party LLM or backend endpoints |
-| *Database URLs* | **None** | — | — | Ephemeral in-memory execution |
-| *Auth Tokens* | **None** | — | — | Zero user tracking / account overhead |
+| *Database URLs* | **None** | — | — | Pure ephemeral in-memory state |
+| *Auth Tokens* | **None** | — | — | Zero tracking, zero user accounts, zero cookies |
 
 ---
 
